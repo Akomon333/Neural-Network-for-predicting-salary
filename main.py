@@ -2,7 +2,7 @@ import pandas as pd
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
+from sklearn.model_selection import train_test_split
 # AVAILABLE WORK YEARS 2020 - 2023
 def int_to_company_location(number):
     countrys_indexes = ['Spain', 'United States', 'Canada', 'Germany', 'United Kingdom', 'Nigeria', 'India',
@@ -45,33 +45,81 @@ def int_to_company_size(number):
         return sizes[number] 
     else:
         return "Invalid index" 
+def int_to_year(number):
+    sizes = ["2023", "2022", "2020", "2021"]
+    if 0 <= number < len(sizes):
+        return sizes[number] 
+    else:
+        return "Invalid index" 
 
 file = pd.read_csv("./ds_salaries.csv")
 
+
+print(file["salary_in_usd"].unique())
+for item in file["salary_in_usd"].unique():
+      file.replace(item, str(item / 100000),inplace=True)
+print(file["salary_in_usd"].unique())
+
+file.to_csv("./ds_salaries.csv")
 
 
 # 6 inputs 1 output(salary)
 # output salary_in_usd
 # inputs work_year, experience_level, employment_type, job_title, company_location, company_size
-class Model(nn.Module):
-    def __init__(self, inputs=6,h1=20,h2=25,output_features=1): # fc = fully connected layer(connectin layers)
-        super().__init__()
-        self.fc1 = nn.Linear(inputs,h1)
-        self.fc2 = nn.Linear(h1,h2)
-        self.out = nn.Linear(h2,output_features)
+# class Model(nn.Module):
+#     def __init__(self, inputs=7,h1=20,h2=25,output_features=1): # fc = fully connected layer(connectin layers)
+#         super().__init__()
+#         self.fc1 = nn.Linear(inputs,h1)
+#         self.fc2 = nn.Linear(h1,h2)
+#         self.out = nn.Linear(h2,output_features)
 
-    def forward(self,x):
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
-        x = self.out(x)
+#     def forward(self,x):
+#         x = F.relu(self.fc1(x))
+#         x = F.relu(self.fc2(x))
+#         x = self.out(x)
 
-        return x
+#         return x
     
 
-torch.manual_seed(41)
+# torch.manual_seed(41)
 
-model = Model()
+# model = Model()
 
 
-file.to_csv("./ds_salaries.csv",index=False)
-print(file.columns)
+
+# X = file.drop('salary_in_usd',axis=1) # Features
+# y = file['salary_in_usd'] # Salaries
+
+# X = X.values
+# y = y.values
+
+
+# X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.3, random_state=41)
+
+# X_train = torch.FloatTensor(X_train)
+# X_test = torch.FloatTensor(X_test)
+
+# y_train = torch.FloatTensor(y_train)
+# y_test = torch.FloatTensor(y_test)
+
+
+# criterion = nn.MSELoss()
+
+# optimizer = torch.optim.Adam(model.parameters(),lr = 0.1)
+
+# epochs = 100
+
+# losses = []
+
+# for i in range(epochs):
+#     y_prediction = model.forward(X_train)
+
+#     loss = criterion(y_prediction, y_train)
+
+#     losses.append(loss.detach().numpy())
+
+#     print(f'Epoch: {i} and loss: {loss}')
+
+#     optimizer.zero_grad()
+#     loss.backward()
+#     optimizer.step()   
