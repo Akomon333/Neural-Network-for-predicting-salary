@@ -53,75 +53,68 @@ def int_to_year(number):
         return "Invalid index" 
 def int_to_salary(number):
     return number * 100000 
+
+
+
+
 file = pd.read_csv("./ds_salaries.csv")
 
-print(file.columns)
-#print(file["salary_in_usd"].dtype)
-# for item in file["salary_in_usd"].unique():
-#       file.replace(item, str(item / 100000),inplace=True)
-# print(file["salary_in_usd"].unique())
-
-file.drop(columns=["Unnamed: 0.1","Unnamed: 0"], inplace=True)
-file.to_csv("./ds_salaries.csv",index=False)
-print(file.columns)
 
 # 6 inputs 1 output(salary)
 # output salary_in_usd
 #inputs work_year, experience_level, employment_type, job_title, company_location, company_size
-# class Model(nn.Module):
-#     def __init__(self, inputs=7,h1=20,h2=25,output_features=1): # fc = fully connected layer(connectin layers)
-#         super().__init__()
-#         self.fc1 = nn.Linear(inputs,h1)
-#         self.fc2 = nn.Linear(h1,h2)
-#         self.out = nn.Linear(h2,output_features)
+class Model(nn.Module):
+    def __init__(self, inputs=6,h1=20,h2=25,output_features=1): # fc = fully connected layer(connectin layers)
+        super().__init__()
+        self.fc1 = nn.Linear(inputs,h1)
+        self.fc2 = nn.Linear(h1,h2)
+        self.out = nn.Linear(h2,output_features)
 
-#     def forward(self,x):
-#         x = F.relu(self.fc1(x))
-#         x = F.relu(self.fc2(x))
-#         x = self.out(x)
+    def forward(self,x):
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = self.out(x)
 
-#         return x
+        return x
     
 
-# torch.manual_seed(41)
+torch.manual_seed(41)
 
-# model = Model()
-
-
-
-# X = file.drop('salary_in_usd',axis=1) # Features
-# y = file['salary_in_usd'] # Salaries
-
-# X = X.values
-# y = y.values
+model = Model()
 
 
-# X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.3, random_state=41)
 
-# X_train = torch.FloatTensor(X_train)
-# X_test = torch.FloatTensor(X_test)
+X = file.drop('salary_in_usd',axis=1) # Features
+y = file['salary_in_usd'] # Salaries
 
-# y_train = torch.FloatTensor(y_train)
-# y_test = torch.FloatTensor(y_test)
+X = X.values
+y = y.values
 
 
-# criterion = nn.MSELoss()
+X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.3, random_state=41)
 
-# optimizer = torch.optim.Adam(model.parameters(),lr = 0.01)
+X_train = torch.tensor(X_train, dtype=torch.float32)
+X_test = torch.tensor(X_test, dtype=torch.float32)
 
-# epochs = 100
+y_train = torch.tensor(y_train).view(-1, 1).float()
+y_test = torch.tensor(y_test).view(-1, 1).float()
 
-# losses = []
+criterion = nn.SmoothL1Loss()
 
-# for i in range(epochs):
-#     y_prediction = model.forward(X_train)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
-#     loss = criterion(y_prediction, y_train)
+epochs = 1000
+losses = []
 
-#     losses.append(loss.detach().numpy())
+for i in range(epochs):
+    y_prediction = model(X_train)  # don't call .forward()
 
-#     print(f'Epoch: {i} and loss: {loss}')
+    loss = criterion(y_prediction, y_train)
 
-#     optimizer.zero_grad()
-#     loss.backward()
-#     optimizer.step()   
+    losses.append(loss.item())
+
+    print(f'Epoch: {i} - Loss: {loss.item():.4f}')
+
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
