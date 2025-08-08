@@ -51,21 +51,23 @@ def int_to_year(number):
         return sizes[number] 
     else:
         return "Invalid index" 
-
+def int_to_salary(number):
+    return number * 100000 
 file = pd.read_csv("./ds_salaries.csv")
 
+print(file.columns)
+#print(file["salary_in_usd"].dtype)
+# for item in file["salary_in_usd"].unique():
+#       file.replace(item, str(item / 100000),inplace=True)
+# print(file["salary_in_usd"].unique())
 
-print(file["salary_in_usd"].unique())
-for item in file["salary_in_usd"].unique():
-      file.replace(item, str(item / 100000),inplace=True)
-print(file["salary_in_usd"].unique())
-
-file.to_csv("./ds_salaries.csv")
-
+file.drop(columns=["Unnamed: 0.1","Unnamed: 0"], inplace=True)
+file.to_csv("./ds_salaries.csv",index=False)
+print(file.columns)
 
 # 6 inputs 1 output(salary)
 # output salary_in_usd
-# inputs work_year, experience_level, employment_type, job_title, company_location, company_size
+#inputs work_year, experience_level, employment_type, job_title, company_location, company_size
 # class Model(nn.Module):
 #     def __init__(self, inputs=7,h1=20,h2=25,output_features=1): # fc = fully connected layer(connectin layers)
 #         super().__init__()
@@ -105,7 +107,7 @@ file.to_csv("./ds_salaries.csv")
 
 # criterion = nn.MSELoss()
 
-# optimizer = torch.optim.Adam(model.parameters(),lr = 0.1)
+# optimizer = torch.optim.Adam(model.parameters(),lr = 0.01)
 
 # epochs = 100
 
