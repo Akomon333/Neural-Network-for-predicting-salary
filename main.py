@@ -171,31 +171,31 @@ criterion = nn.SmoothL1Loss()
 
 optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
-epochs = 100
+epochs = 10000
 
-for i in range(epochs):
-    y_prediction = model(X_train)  # don't call .forward()
+# for i in range(epochs):
+#     y_prediction = model(X_train)  # don't call .forward()
 
-    loss = criterion(y_prediction, y_train)
+#     loss = criterion(y_prediction, y_train)
 
-    print(f'Epoch: {i} - Loss: {loss.item():.4f}')
+#     print(f'Epoch: {i} - Loss: {loss.item():.4f}')
 
-    optimizer.zero_grad()
-    loss.backward()
-    optimizer.step()
+#     optimizer.zero_grad()
+#     loss.backward()
+#     optimizer.step()
 
-    if i % 1000 == 0:
-        torch.save(model.state_dict(), 'Tech_Salary_Prediction_o1')
-
-
+#     if i % 1000 == 0:
+#         torch.save(model.state_dict(), 'Tech_Salary_Prediction_o1')
 
 
-torch.save(model.state_dict(), 'Tech_Salary_Prediction_o1')
 
-with torch.no_grad():
-    y_eval = model.forward(X_test)
-    loss = criterion(y_eval, y_test)
-    print(f'Testing loss: {loss}')
+
+# torch.save(model.state_dict(), 'Tech_Salary_Prediction_o1')
+
+# with torch.no_grad():
+#     y_eval = model.forward(X_test)
+#     loss = criterion(y_eval, y_test)
+#     print(f'Testing loss: {loss}')
 
 
 #'work_year' 'experience_level' 'employment_type' 'job_title' 'company_location' 'company_size'
